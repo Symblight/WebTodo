@@ -1,0 +1,82 @@
+.tdItem{
+
+    position: relative;
+    float: center;
+    margin: 10 auto;
+}
+
+.wall_post_text {
+    line-height: 1.462;
+    padding-top: 3px;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+body{
+	background-color: rgb(236, 239, 241);
+}
+.header_menu{
+	background: #1565C0;
+   	position: fixed;
+   	color: white;
+    height: 42px;
+    width: 100%;
+    left: 0;
+    top: 0;
+    z-index: 120;
+    direction: ltr;
+}
+
+.page{
+	padding: 5 15px;
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+	margin-top: 75px;
+	width: 450px;
+	height: auto;
+	float: center;
+	background: white;
+ border-radius: 2px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+}
+
+.main{
+float: center;
+}
+
+.task_item{
+	margin:5 auto;
+	padding: 5px;
+	background: white;
+	width: 450px;
+    background: white;
+    border-radius: 2px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+}
+
+
+.flat_button {
+    padding: 7px 16px 8px;
+    margin: 0;
+    font-size: 12.5px;
+    display: inline-block;
+    zoom: 1;
+    cursor: pointer;
+    font-family: -apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;
+    vertical-align: top;
+    line-height: 15px;
+    text-align: center;
+    text-decoration: none;
+    background: none;
+    background-color: #1E88E5;
+    color: #fff;
+    border: 0;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+.fl_r {
+    float: right;
+}
+
