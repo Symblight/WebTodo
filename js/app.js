@@ -1,8 +1,9 @@
-
 	var btnAdd=document.getElementById("btn");
 	var textbox=document.getElementById("txt");
 	var panel=document.getElementById("page");
 	var idMask="id_",id=0;
+
+loadStorageValues();
 
 var Task= {
 	constructor: function(text, time, id){
@@ -15,28 +16,13 @@ var Task= {
 
 btnAdd.onclick=function(){
 	var date = new Date();
-	addBlockValue(textbox.value,id,date.toLocaleString("en-US", options));
+	addBlockValue(textbox.value,id,date);
 	var taskJSON=Object.create(Task).constructor(textbox.value,date,id);
 	var value =JSON.stringify(taskJSON);
 	localStorage.setItem(idMask+id,value);
 	textbox.value=null;
 	id++;
 }
-
-loadStorageValues();
-
-
-var options = {
-  era: 'long',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  weekday: 'long',
-  timezone: 'UTC',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric'
-};
 
 function loadStorageValues(){
 	for (var i=0; i<localStorage.length;i++){
@@ -47,51 +33,78 @@ function loadStorageValues(){
 }
 
 function addBlockValue(value,idItem, date){	
-//	var xmlhttp=new ActiveXObject();
-	var wall_post="<div class='task_item'><span>"+date+"</span><button class='flat_button action_del' id=del_"+idItem+" title='Удалить из списка'>Delete</button><div class='wall_post_text'><span id='txt_"+idItem+"'>"+value+"</span></div><br><button class='flat_button action_edit' id=edit_"+idItem+">Edit</button></div>";
 	var liEl=document.createElement('li');
+	var divMainEl=document.createElement('div');
+	divMainEl.className='task_item';
+
+	var spanEL=document.createElement('span');
+	spanEL.innerHTML=date;
+	var btnDelete=document.createElement('button');
+	btnDelete.classList.add('flat_button');
+	btnDelete.classList.add('action_del');
+	btnDelete.title='Удалить из списка';
+	btnDelete.innerHTML='Delete';
+	divMainEl.appendChild(spanEL);
+	divMainEl.appendChild(btnDelete);
+	var divSpan=document.createElement('div');
+	divSpan.className='wall_post_text';
+	var spanValue=document.createElement('span');
+	spanValue.id='txt_'+idItem;
+	spanValue.innerHTML=value;
+	divSpan.appendChild(spanValue);
+	divMainEl.appendChild(divSpan);
+	var divNav=document.createElement('div');
+	var btnEdit=document.createElement('button');
+	btnEdit.classList.add('flat_button');
+	btnEdit.classList.add('action_edit');
+	btnEdit.innerHTML='Edit';
+	divNav.appendChild(btnEdit);
+	divMainEl.appendChild(divNav);
+
+    liEl.appendChild(divMainEl);
 	liEl.className='tdItem';
-	liEl.innerHTML=wall_post;
 	liEl.id=idItem;
-	$(liEl).attr("Name","liItem");
+	liEl.setAttribute("Name","liItem");
 	document.body.appendChild(liEl);
-	$(liEl).show("slow");
-	console.log(liEl.id);
 };
 
-$('.action_del').click(function(){
-	var liId=$(this).closest('li').attr('id');
-	$(this).closest('li').remove();
+document.querySelectorAll('.action_del').forEach(function(e){
+	e.onclick=function(){
+	var liId=e.closest('li').getAttribute('id');
+	e.closest('li').remove();
 	localStorage.removeItem(idMask+liId);
-})
-
-$('.action_edit').click(function(){
-	var id=$(this).closest('li').attr('id');
-		if (!$(this).hasClass('Save')){
-			$('span#txt_'+id).replaceWith(function(){
-				return $('<textarea id="txt_'+id+'">'+$('span#txt_'+id).html()+'</textarea>')
-			});
-			$(this).html("Save");
-			$(this).addClass('Save');	
-		} else if ($(this).hasClass('Save')){
-					EditLocalStorage(id,$('textarea#txt_'+id).val());
-					$('textarea#txt_'+id).replaceWith(function(){
-						return $('<span id="txt_'+id+'">'+$('textarea#txt_'+id).val()+'</span>')
-					});
-				$(this).html("Edit");
-				$(this).removeClass('Save');
-		};
+	};
 });
 
+document.querySelectorAll('.action_edit').forEach(function(el){
+	el.onclick=function(){
+		if (el.classList){
+ 		 if (!el.classList.contains('Save')){
+ 		 	var id=el.closest('li').getAttribute('id');
+ 		 	console.log(id);
+ 		 	var element=document.getElementById('txt_'+id);
+ 		 	element.outerHTML = "<textarea id='txt_"+id+"'>"+element.textContent+"</textarea>";
+ 		 	el.innerHTML="Save";		
+  			el.classList.add('Save');		 
+ 		 } else
+ 		 {
+ 		 	var id=el.closest('li').getAttribute('id');
+ 		 	var element=document.getElementById('txt_'+id);
+ 		 	console.log(id);
+ 		 	EditLocalStorage(id,element.value);
+ 		 	element.outerHTML = "<span id='txt_"+id+"'>"+element.value+"</span>";
+ 		 	el.innerHTML="Edit";
+ 		 	el.classList.remove('Save');		
+ 		 }		 	
+		}
+  	 	
+	};
+});
 
 function EditLocalStorage(id, value){
-	for (key in localStorage){
-		var taskJSON=JSON.parse(localStorage.getItem(localStorage.key(key)));
-		if (taskJSON.id==key.substring(3)){
+		var taskJSON=JSON.parse(localStorage.getItem(localStorage.key("id_"+id)));	
 			taskJSON.text=value;
 			var editValue=JSON.stringify(taskJSON);
-			localStorage.removeItem(key);
-			localStorage.setItem(key,editValue);
-		}
-	}
+			localStorage.removeItem("id_"+id);
+			localStorage.setItem("id_"+id,editValue);
 }
