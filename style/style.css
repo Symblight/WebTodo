@@ -42,7 +42,19 @@ body{
 }
 
 .main{
-float: center;
+    min-height: 100%;
+    float: center;
+}
+.footer_block{
+        position: relative;
+       width: 100%;
+      clear: both;
+}
+
+footer {
+    margin-top: 2em;
+    background: rgb(45, 45, 45);
+    color: rgb(200, 200, 200);
 }
 
 .list_menu{
