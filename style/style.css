@@ -45,10 +45,23 @@ body{
 float: center;
 }
 
+.list_menu{
+margin-top: 75px;
+}
+
+a.action {
+    padding: 1px;
+    text-decoration: none;
+    color: #1E88E5;
+}
+
+.icon-add:before {
+    content:'+'
+}
+
 .task_item{
 	margin:5 auto;
 	padding: 5px;
-	background: white;
 	width: 450px;
     background: white;
     border-radius: 2px;

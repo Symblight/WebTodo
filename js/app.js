@@ -1,6 +1,4 @@
-	var btnAdd=document.getElementById("btn");
-	var textbox=document.getElementById("txt");
-	var panel=document.getElementById("page");
+	var panel=document.getElementById("list");
 	var idMask="id_",id=0;
 
 loadStorageValues();
@@ -14,7 +12,15 @@ var Task= {
 	}
 }
 
-btnAdd.onclick=function(){
+document.querySelector('.action_add').onclick=function(){
+	var date = new Date();
+	BlockValue('',id,date);
+	var taskJSON=Object.create(Task).constructor('',date,id);
+	var value =JSON.stringify(taskJSON);
+	localStorage.setItem(idMask+id,value);
+	id++;
+}
+/*btnAdd.onclick=function(){
 	var date = new Date();
 	addBlockValue(textbox.value,id,date);
 	var taskJSON=Object.create(Task).constructor(textbox.value,date,id);
@@ -22,18 +28,23 @@ btnAdd.onclick=function(){
 	localStorage.setItem(idMask+id,value);
 	textbox.value=null;
 	id++;
+}*/
+
+function addBlockValue(){
+
 }
 
 function loadStorageValues(){
 	for (var i=0; i<localStorage.length;i++){
 		var taskJSON=JSON.parse(localStorage.getItem(localStorage.key(i)));
-		addBlockValue(taskJSON.text,taskJSON.id,taskJSON.time);
-		if (id<=localStorage.key(i).substring(3)&&localStorage.length>0) id++;		
+		BlockValue(taskJSON.text,taskJSON.id,taskJSON.time);
+		id=localStorage.key(i).substring(3);	
 	}
+	if (id.length>0) id++;
 }
 
-function addBlockValue(value,idItem, date){	
-	var liEl=document.createElement('li');
+function BlockValue(value,idItem, date){	
+	var liEl=document.createElement('div');
 	var divMainEl=document.createElement('div');
 	divMainEl.className='task_item';
 
@@ -61,50 +72,43 @@ function addBlockValue(value,idItem, date){
 	divNav.appendChild(btnEdit);
 	divMainEl.appendChild(divNav);
 
+	btnEdit.onclick=function(){
+		if (this.classList){
+ 		 if (!this.classList.contains('Save')){
+ 		 	var idLi=this.closest('.tdItem').getAttribute('id');
+ 		 	var element=document.getElementById('txt_'+idLi);
+ 		 	element.outerHTML = "<textarea id='txt_"+idLi+"'>"+element.textContent+"</textarea>";
+ 		 	this.innerHTML="Save";		
+  			this.classList.add('Save');		 
+ 		 } else
+ 		 {
+ 		 	var idLi=this.closest('.tdItem').getAttribute('id');
+ 		 	var element=document.getElementById('txt_'+idLi);
+ 		 	EditLocalStorage(idLi,element.value);
+ 		 	element.outerHTML = "<span id='txt_"+idLi+"'>"+element.value+"</span>";
+ 		 	this.innerHTML="Edit";
+ 		 	this.classList.remove('Save');		
+ 		 }		 	
+		}	
+	};
+
+	btnDelete.onclick=function(){
+	var liId=this.closest('.tdItem').getAttribute('id');
+	this.closest('.tdItem').remove();
+	localStorage.removeItem(idMask+liId);
+	};
+
     liEl.appendChild(divMainEl);
 	liEl.className='tdItem';
 	liEl.id=idItem;
 	liEl.setAttribute("Name","liItem");
-	document.body.appendChild(liEl);
+	panel.appendChild(liEl);
 };
 
-document.querySelectorAll('.action_del').forEach(function(e){
-	e.onclick=function(){
-	var liId=e.closest('li').getAttribute('id');
-	e.closest('li').remove();
-	localStorage.removeItem(idMask+liId);
-	};
-});
-
-document.querySelectorAll('.action_edit').forEach(function(el){
-	el.onclick=function(){
-		if (el.classList){
- 		 if (!el.classList.contains('Save')){
- 		 	var id=el.closest('li').getAttribute('id');
- 		 	console.log(id);
- 		 	var element=document.getElementById('txt_'+id);
- 		 	element.outerHTML = "<textarea id='txt_"+id+"'>"+element.textContent+"</textarea>";
- 		 	el.innerHTML="Save";		
-  			el.classList.add('Save');		 
- 		 } else
- 		 {
- 		 	var id=el.closest('li').getAttribute('id');
- 		 	var element=document.getElementById('txt_'+id);
- 		 	console.log(id);
- 		 	EditLocalStorage(id,element.value);
- 		 	element.outerHTML = "<span id='txt_"+id+"'>"+element.value+"</span>";
- 		 	el.innerHTML="Edit";
- 		 	el.classList.remove('Save');		
- 		 }		 	
-		}
-  	 	
-	};
-});
-
-function EditLocalStorage(id, value){
-		var taskJSON=JSON.parse(localStorage.getItem(localStorage.key("id_"+id)));	
+function EditLocalStorage(idItem, value){
+		var taskJSON=JSON.parse(localStorage.getItem("id_"+idItem));	
 			taskJSON.text=value;
 			var editValue=JSON.stringify(taskJSON);
-			localStorage.removeItem("id_"+id);
-			localStorage.setItem("id_"+id,editValue);
+			localStorage.removeItem("id_"+idItem);
+			localStorage.setItem("id_"+idItem,editValue);
 }
