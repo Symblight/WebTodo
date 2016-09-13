@@ -1,6 +1,8 @@
 	var panel=document.getElementById("list");
 	var idMask="id_",id=0;
 	var textbox=document.getElementById('txt');
+	var radioTask=document.getElementById('Task');
+	var radioText=document.getElementById('Text');
 
 loadStorageValues();
 
@@ -8,18 +10,19 @@ var Task= function(text,time,id){
 	this.text=text;
 	this.time=time;
 	this.id=id;
-}
+};
 
 Task.prototype={
 	insertJSON: function(){
 		return JSON.stringify(this);
 	}
-}
+};
 
 document.querySelector('.action_add').onclick=function(){
 	var date = new Date();
 	BlockValue(textbox.value,id,date);
 	var task=new Task(textbox.value,date,id);
+	//console.log(task.typeTask('Task'));
 	localStorage.setItem(idMask+id,task.insertJSON());
 	id++;
 	textbox.value='';
@@ -41,13 +44,16 @@ function BlockValue(value,idItem, date){
 
 	var spanEL=document.createElement('span');
 	spanEL.innerHTML=date;
+	var divUp=document.createElement('div');
 	var btnDelete=document.createElement('button');
 	btnDelete.classList.add('flat_button');
 	btnDelete.classList.add('action_del');
+	btnDelete.classList.add('fl_r');
 	btnDelete.title='Удалить из списка';
 	btnDelete.innerHTML='Delete';
-	divMainEl.appendChild(spanEL);
-	divMainEl.appendChild(btnDelete);
+	divUp.appendChild(spanEL);
+	divUp.appendChild(btnDelete);
+	divMainEl.appendChild(divUp);
 	var divSpan=document.createElement('div');
 	divSpan.className='wall_post_text';
 	var spanValue=document.createElement('span');
