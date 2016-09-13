@@ -4,21 +4,23 @@
 
 loadStorageValues();
 
-var Task= {
-	constructor: function(text, time, id){
+var Task= function(text,time,id){ 
 	this.text=text;
 	this.time=time;
 	this.id=id;
-	return this;
+}
+
+Task.prototype={
+	insertJSON: function(){
+		return JSON.stringify(this);
 	}
 }
 
 document.querySelector('.action_add').onclick=function(){
 	var date = new Date();
 	BlockValue(textbox.value,id,date);
-	var taskJSON=Object.create(Task).constructor(textbox.value,date,id);
-	var value =JSON.stringify(taskJSON);
-	localStorage.setItem(idMask+id,value);
+	var task=new Task(textbox.value,date,id);
+	localStorage.setItem(idMask+id,task.insertJSON());
 	id++;
 	textbox.value='';
 }
