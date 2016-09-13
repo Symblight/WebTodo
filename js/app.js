@@ -1,5 +1,6 @@
 	var panel=document.getElementById("list");
 	var idMask="id_",id=0;
+	var textbox=document.getElementById('txt');
 
 loadStorageValues();
 
@@ -14,24 +15,12 @@ var Task= {
 
 document.querySelector('.action_add').onclick=function(){
 	var date = new Date();
-	BlockValue('',id,date);
-	var taskJSON=Object.create(Task).constructor('',date,id);
-	var value =JSON.stringify(taskJSON);
-	localStorage.setItem(idMask+id,value);
-	id++;
-}
-/*btnAdd.onclick=function(){
-	var date = new Date();
-	addBlockValue(textbox.value,id,date);
+	BlockValue(textbox.value,id,date);
 	var taskJSON=Object.create(Task).constructor(textbox.value,date,id);
 	var value =JSON.stringify(taskJSON);
 	localStorage.setItem(idMask+id,value);
-	textbox.value=null;
 	id++;
-}*/
-
-function addBlockValue(){
-
+	textbox.value='';
 }
 
 function loadStorageValues(){
