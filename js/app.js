@@ -2,27 +2,29 @@
 	var idMask="id_",id=0;
 	var textbox=document.getElementById('txt');
 	var radioTask=document.getElementById('Task');
-	var radioText=document.getElementById('Text');
+	//var radioText=document.getElementById('Text');
 
 loadStorageValues();
 
-var Task= function(text,time,id){ 
+var Task= function(text,time,id,type,status){ 
 	this.text=text;
 	this.time=time;
 	this.id=id;
+	this.type=type;
+	this.status=status;
 };
 
 Task.prototype={
 	insertJSON: function(){
 		return JSON.stringify(this);
-	}
+	},
 };
 
 document.querySelector('.action_add').onclick=function(){
 	var date = new Date();
-	BlockValue(textbox.value,id,date);
-	var task=new Task(textbox.value,date,id);
-	//console.log(task.typeTask('Task'));
+	var task = new Task(textbox.value,date,id);
+	if (radioTask.checked===true) task.type='Task';
+	BlockValue(textbox.value,id,date,task.type);
 	localStorage.setItem(idMask+id,task.insertJSON());
 	id++;
 	textbox.value='';
@@ -31,13 +33,13 @@ document.querySelector('.action_add').onclick=function(){
 function loadStorageValues(){
 	for (var i=0; i<localStorage.length;i++){
 		var taskJSON=JSON.parse(localStorage.getItem(localStorage.key(i)));
-		BlockValue(taskJSON.text,taskJSON.id,taskJSON.time);
+		BlockValue(taskJSON.text,taskJSON.id,taskJSON.time, taskJSON.type, taskJSON.status);
 		id=localStorage.key(i).substring(3);	
 	}
 	if (id.length>0) id++;
 }
 
-function BlockValue(value,idItem, date){	
+function BlockValue(value,idItem, date, type,status){	
 	var liEl=document.createElement('div');
 	var divMainEl=document.createElement('div');
 	divMainEl.className='task_item';
@@ -68,6 +70,16 @@ function BlockValue(value,idItem, date){
 	btnEdit.innerHTML='Edit';
 	divNav.appendChild(btnEdit);
 	divMainEl.appendChild(divNav);
+
+	if (type==='Task'){
+	var checkbox=document.createElement('input');
+	checkbox.type='checkbox';
+	checkbox.id=idItem;
+	if (status===true) checkbox.checked=true;
+	checkbox.classList.add('fl_r');
+	checkbox.classList.add('ch');
+	divNav.appendChild(checkbox);
+}
 
 	btnEdit.onclick=function(){
 		if (this.classList){
@@ -109,3 +121,14 @@ function EditLocalStorage(idItem, value){
 			localStorage.removeItem("id_"+idItem);
 			localStorage.setItem("id_"+idItem,editValue);
 }
+
+document.querySelectorAll('.ch').forEach(function(el){
+	el.onclick=function(){
+		var idItem=this.getAttribute('id');
+		var taskJSON=JSON.parse(localStorage.getItem("id_"+idItem));
+		taskJSON.status=el.checked;
+		var taskJSON=JSON.stringify(taskJSON);
+		localStorage.removeItem("id_"+idItem);
+		localStorage.setItem("id_"+idItem,taskJSON);
+	};
+});
